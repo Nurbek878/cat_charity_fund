@@ -1,8 +1,9 @@
+from http import HTTPStatus
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.charityproject import charityproject_crud
-from app.models.charityproject import CharityProject
+from app.crud.charity_project import charityproject_crud
+from app.models.charity_project import CharityProject
 
 
 async def check_name_duplicate(
@@ -12,7 +13,7 @@ async def check_name_duplicate(
     charityproject_id = await charityproject_crud.get_charityproject_id_by_name(charityproject_name, session)
     if charityproject_id is not None:
         raise HTTPException(
-            status_code=422,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail='Проект с таким именем уже существует!',
         )
 

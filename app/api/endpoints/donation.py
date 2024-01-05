@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from app.core.db import get_async_session
 from app.crud.donation import donation_crud
 from app.models.user import User
-from app.core.user import current_user
+from app.core.user import current_user, current_superuser
 
-from app.schemas.donation import DonationCreate, DonationMyDB
+from app.schemas.donation import DonationAllDB, DonationCreate, DonationMyDB
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
@@ -22,9 +22,12 @@ async def create_donation(
     return new_donation
 
 
-@router.get('/', response_model=list[DonationMyDB])
+@router.get('/',
+            response_model=list[DonationAllDB],
+            dependencies=[Depends(current_superuser)])
 async def get_all_donations(
         session: AsyncSession = Depends(get_async_session)
 ):
+    """Только для суперюзеров."""
     donations = await donation_crud.get_multi(session)
     return donations
