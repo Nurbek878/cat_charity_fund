@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 from app.core.db import get_async_session
 from app.crud.donation import donation_crud
+from app.models.user import User
+from app.core.user import current_user
 
 from app.schemas.donation import DonationCreate, DonationMyDB
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,9 +15,10 @@ router = APIRouter()
              response_model_exclude_none=True)
 async def create_donation(
     donation: DonationCreate,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_user),
 ) -> DonationMyDB:
-    new_donation = await donation_crud.create(donation, session)
+    new_donation = await donation_crud.create(donation, session, user)
     return new_donation
 
 
