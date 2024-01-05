@@ -31,3 +31,13 @@ async def get_all_donations(
     """Только для суперюзеров."""
     donations = await donation_crud.get_multi(session)
     return donations
+
+
+@router.get('/my',
+            response_model=list[DonationMyDB],)
+async def get_all_donations_user(
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_user)
+):
+    donations = await donation_crud.get_by_user(user, session)
+    return donations
