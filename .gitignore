@@ -50,7 +50,9 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-
+*.db
+fastapi.db
+test.db
 # Translations
 *.mo
 *.pot
