@@ -22,7 +22,10 @@ async def investment(
     return obj_new
 
 
-async def get_all_open_projects(model_db, session):
+async def get_all_open_projects(
+    model_db: CharityDonationBase,
+    session: AsyncSession
+) -> list[CharityDonationBase]:
     source_db_all = await session.execute(select(model_db).where(
         model_db.fully_invested == 0).order_by(
             model_db.create_date)

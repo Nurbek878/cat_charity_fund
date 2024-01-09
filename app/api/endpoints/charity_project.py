@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
-from app.api.validators import check_name_duplicate, check_charityproject_exists
+from app.api.validators import check_invested_amount_is_not_null, check_name_duplicate, check_charityproject_exists
 from app.models.donation import Donation
 
 from app.schemas.charity_project import CharityProjectCreate, CharityProjectDB, CharityProjectUpdate
@@ -77,6 +77,9 @@ async def remove_charityproject(
     """Только для суперюзеров."""
     charityproject = await check_charityproject_exists(
         charityproject_id, session
+    )
+    await check_invested_amount_is_not_null(
+        charityproject.invested_amount
     )
     charityproject = await charityproject_crud.remove(
         charityproject, session

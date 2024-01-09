@@ -27,7 +27,17 @@ async def check_charityproject_exists(
     )
     if charityproject is None:
         raise HTTPException(
-            status_code=404,
+            status_code=HTTPStatus.NOT_FOUND,
             detail='Проект не найден!'
         )
     return charityproject
+
+
+async def check_invested_amount_is_not_null(
+    charityproject_invested_amount: int,
+):
+    if charityproject_invested_amount > 0:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='Удаление проектов, в которые уже внесены средства, запрещено.'
+        )

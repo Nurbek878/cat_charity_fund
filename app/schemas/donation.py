@@ -21,4 +21,4 @@ class DonationAllDB(DonationMyDB):
     user_id: Optional[int]
     invested_amount: int = 0
     fully_invested: bool = False
-    close_date: datetime = None
+    close_date: Optional[datetime]

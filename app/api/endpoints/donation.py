@@ -28,6 +28,7 @@ async def create_donation(
 
 @router.get('/',
             response_model=list[DonationAllDB],
+            response_model_exclude={'close_date', },
             dependencies=[Depends(current_superuser)])
 async def get_all_donations(
         session: AsyncSession = Depends(get_async_session)
