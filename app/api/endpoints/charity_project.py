@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
-from app.api.validators import check_invested_amount_is_not_null, check_name_duplicate, check_charityproject_exists
+from app.api.validators import check_full_amount_is_not_less, check_invested_amount_is_not_null, check_name_duplicate, check_charityproject_exists
 from app.models.donation import Donation
 
 from app.schemas.charity_project import CharityProjectCreate, CharityProjectDB, CharityProjectUpdate
@@ -46,6 +46,9 @@ async def partially_update_charityproject(
     )
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
+    await check_full_amount_is_not_less(obj_in.full_amount,
+                                        charityproject.full_amount,
+                                        session)
     charityproject = await charityproject_crud.update(
         charityproject, obj_in, session
     )
