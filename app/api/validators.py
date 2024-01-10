@@ -35,18 +35,31 @@ async def check_charityproject_exists(
 async def check_invested_amount_is_not_null(
     charityproject_invested_amount: int,
 ):
-    if charityproject_invested_amount != 0:
+    if charityproject_invested_amount:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail='Удаление проектов, в которые уже внесены средства, запрещено.'
+            detail='В проект были внесены средства, не подлежит удалению!'
+        )
+
+
+async def check_fully_invested(
+    charityproject_fully_invested: int,
+):
+    if charityproject_fully_invested:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Закрытый проект нельзя редактировать!'
         )
 
 
 async def check_full_amount_is_not_less(
-    obj_full_amount: int, new_full_amount: int, session: AsyncSession
+    project_id: int, new_full_amount: int, session: AsyncSession
 ) -> None:
-    if obj_full_amount < new_full_amount:
+    project = await charityproject_crud.get(
+        project_id, session
+    )
+    if new_full_amount and new_full_amount < project.invested_amount:
         raise HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail='При редактировании проекта должно быть разрешено устанавливать требуемую сумму больше или равную внесённой',
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail='Новая сумма не может быть меньше предыдущей',
         )
