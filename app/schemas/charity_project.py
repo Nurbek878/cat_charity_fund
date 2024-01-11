@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, PositiveInt, validator
+
+from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 
 class CharityProjectBase(BaseModel):
@@ -21,6 +22,9 @@ class CharityProjectUpdate(CharityProjectBase):
         if value is None:
             raise ValueError('Имя проекта не может быть пустым!')
         return value
+
+    class Config:
+        extra = Extra.forbid
 
 
 class CharityProjectDB(CharityProjectCreate):
